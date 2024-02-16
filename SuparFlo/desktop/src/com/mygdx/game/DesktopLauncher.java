@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("SuparFlo");
+		config.setWindowedMode(1024,768);
 		new Lwjgl3Application(new MyGdxGame(), config);
 	}
 }
