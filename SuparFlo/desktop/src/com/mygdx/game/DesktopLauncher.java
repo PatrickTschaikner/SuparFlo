@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.mygdx.game.MyGdxGame;
@@ -11,5 +13,8 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("SuparFlo");
 		new Lwjgl3Application(new MyGdxGame(), config);
+
+		Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode();
+		Gdx.graphics.setFullscreenMode(displayMode);
 	}
 }
