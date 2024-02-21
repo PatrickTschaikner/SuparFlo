@@ -31,15 +31,16 @@ public class Spieler extends SpielObjekt{
 
     }
 
-    public void move(int direction, float deltaTime) {
-        if (direction != this.direction) {
+    public void move (int direction){
+        if (direction != this.direction){
             speed = 2;
         }
-        speed += accelleration * deltaTime;
-        float movement = speed * direction * deltaTime;
-        this.setX(this.getX() + movement);
-
-        // Grenzen aktualisieren
+        speed += accelleration;
+        if(direction == 1){
+            this.setX((getX()-speed));
+        }else{
+            this.setX(this.getX()+speed);
+        }
         this.setBoundary();
         this.direction = direction;
     }
