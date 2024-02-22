@@ -24,6 +24,7 @@ public class Hud {
     private Integer worldTimer;
     private float timeCount;
     private Integer score;
+    private MyGdxGame game;
 
     Label countdownLabel;
     Label scoreLabel;
@@ -32,7 +33,7 @@ public class Hud {
     Label worldLabel;
     Label nameLabel;
 
-    public  Hud(SpriteBatch sb){
+    public  Hud(MyGdxGame game, SpriteBatch sb){
         worldTimer = 300;
         timeCount = 0;
         score = 0;
@@ -55,17 +56,17 @@ public class Hud {
         countdownLabel.setFontScale(0.2f);
         scoreLabel = new Label(String.format("%06d", score), labelStyle);
         scoreLabel.setFontScale(0.2f);
-        timeLabel = new Label("TIME", labelStyle);
+        /*timeLabel = new Label("TIME", labelStyle);
         timeLabel.setFontScale(0.2f);
         levelLabel = new Label("Level 1", labelStyle);
         levelLabel.setFontScale(0.2f);
         worldLabel = new Label("WORLD", labelStyle);
         worldLabel.setFontScale(0.2f);
         nameLabel = new Label("Score", labelStyle);
-        nameLabel.setFontScale(0.2f);
+        nameLabel.setFontScale(0.2f);*/
 
-        table.add(nameLabel).expandX().padTop(1);
-        table.add(levelLabel).expandX().padTop(1);
+        //table.add(nameLabel).expandX().padTop(1);
+        //table.add(levelLabel).expandX().padTop(1);
         table.add(countdownLabel).expandX().padTop(1);
         table.row();
         table.add(scoreLabel).expandX().padTop(1);
@@ -73,11 +74,13 @@ public class Hud {
 
         stage.addActor(table);
 
-        Timer.schedule(new Timer.Task(){
+        Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 // Timer-Logik hier einfügen
-                worldTimer--;
+                if(game.isGameState()){
+                    worldTimer--;
+                }
                 countdownLabel.setText(String.format("%03d", worldTimer));
 
                 if (worldTimer <= 0) {
@@ -89,6 +92,12 @@ public class Hud {
         }, 1, 1);
     }
 
+    public Integer getWorldTimer() {
+        return worldTimer;
+    }
 
+    public void setWorldTimer(Integer worldTimer) {
+        this.worldTimer = worldTimer;
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.mygdx.game.screens;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -11,16 +12,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.actors.Spieler;
+import com.mygdx.game.helper.ImageHelper;
 import com.mygdx.game.scenes.Hud;
+import com.mygdx.game.scenes.Settings;
 
 public class PlayScreen implements Screen {
 
     public SpriteBatch batch;
-
+    private Settings settings;
+    private Stage stage;
     private MyGdxGame game;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -29,8 +34,8 @@ public class PlayScreen implements Screen {
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
-    public Spieler spieler;
-    private Texture paul;
+    Spieler spieler;
+    Texture img;
 
     public PlayScreen(MyGdxGame game){
         this.game = game;
@@ -38,22 +43,26 @@ public class PlayScreen implements Screen {
         //erstellt Kamera zum Folgen von Mario
         camera = new OrthographicCamera();
         viewport = new FitViewport(MyGdxGame.WORLD_WIDTH,MyGdxGame.WORLD_HEIGHT,camera);
-        hud = new Hud(game.batch);
+        hud = new Hud(game, game.batch);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("Images/landscape.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        paul = new Texture("Images/paul.png");
-        spieler = new Spieler(0,0,paul );
+        //paul = new Texture("Images/paul.png");
+        ImageHelper ih = new ImageHelper();
+        spieler = new Spieler(0,0,ih.changeImgSize(130,110,"Images/bowser.png"));
+        //spieler = new Spieler(0,0,paul );
+
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     public void handleInput(float dt){
+
         if(Gdx.input.isKeyPressed(Input.Keys.D))
             camera.position.x += 100 * dt;
 
@@ -71,11 +80,14 @@ public class PlayScreen implements Screen {
 
     }
 
-    public void update(float dt){
-        handleInput(dt);
-        camera.update();
-        renderer.setView(camera);
+    public void update(float dt) {
+        if (game.isGameState()) {
+            handleInput(dt);
+            camera.update();
+            renderer.setView(camera);
+        }
     }
+
 
     @Override
     public void render(float delta) {
@@ -84,16 +96,18 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        //game.batch.begin(); // SpriteBatch initialisieren
-
-        renderer.render();
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
-
-        //spieler.draw(batch, 1); // Game-Objekt-Batch verwenden
+        batch.begin(); // SpriteBatch initialisieren
+        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        
+        spieler.draw(batch, 1); // Game-Objekt-Batch verwenden
         //spieler.update(delta);
+        batch.end(); // SpriteBatch beenden
 
-        //game.batch.end(); // SpriteBatch beenden
+        //renderer.render();
+
+            //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+            //hud.stage.draw();
+            //spieler.draw(batch, 1);
     }
 
 
@@ -119,6 +133,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
     }
 }
